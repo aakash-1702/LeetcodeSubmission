@@ -4,31 +4,27 @@ public:
         int n = s.size();
         int m = t.size();
 
-        vector<vector<int>> dp(n , vector<int>(m , -1));
+        vector<vector<unsigned long long>> dp(
+            n + 1,
+            vector<unsigned long long>(m + 1, 0)
+        );
 
-
-        return fun(0 , 0 , s , t , dp);
-        
-    }
-    private:
-    int fun(int i , int j , string &s , string &t , vector<vector<int>> &dp){
-        int n = s.size();
-        int m = t.size();
-        if(j >= m ) return 1;
-        if(i >= n) return 0;
-
-        if(dp[i][j] != -1) return dp[i][j];
-
-        int ans = 0;
-        if(s[i] == t[j]){
-            int take = fun(i + 1 , j + 1, s , t , dp);
-            int nottake = fun(i + 1 , j , s , t , dp);
-            ans = take + nottake;
-        }else {
-            int nottake = fun(i + 1 , j , s , t , dp);
-            ans = nottake;
+        // Empty t can always be formed in exactly 1 way
+        for (int i = 0; i <= n; i++) {
+            dp[i][m] = 1;
         }
 
-        return dp[i][j] = ans;
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = m - 1; j >= 0; j--) {
+
+                dp[i][j] = dp[i + 1][j];
+
+                if (s[i] == t[j]) {
+                    dp[i][j] += dp[i + 1][j + 1];
+                }
+            }
+        }
+
+        return dp[0][0];
     }
 };
